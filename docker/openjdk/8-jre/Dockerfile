@@ -1,5 +1,4 @@
-# https://github.com/docker-library/openjdk/blob/b4f29ba829765552239bd18f272fcdaf09eca259/8-jdk/alpine/Dockerfile
-FROM alpine:3.11.2
+FROM alpine:latest
 
 # Default to UTF-8 file.encoding
 ENV LANG zh_CN.UTF-8
@@ -13,16 +12,13 @@ RUN { \
 		echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
 	} > /usr/local/bin/docker-java-home \
 	&& chmod +x /usr/local/bin/docker-java-home
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
+ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
 
 ARG JAVA_ALPINE_VERSION="8.232.09-r0"
-ARG MAVEN_ALPINE_VERSION="3.6.3-r0"
-
 ARG MIRROR="http://mirrors.aliyun.com"
 
 RUN set -x \
     && echo -e "${MIRROR}/alpine/v3.11/main\n${MIRROR}/alpine/v3.11/community" > /etc/apk/repositories \
-	&& apk add --no-cache  openjdk8="$JAVA_ALPINE_VERSION" \
-    && apk add --no-cache maven="$MAVEN_ALPINE_VERSION" \
+	&& apk add --no-cache openjdk8-jre="$JAVA_ALPINE_VERSION" \
 	&& [ "$JAVA_HOME" = "$(docker-java-home)" ]
