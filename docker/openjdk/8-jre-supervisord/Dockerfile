@@ -14,16 +14,22 @@ RUN { \
 	&& chmod +x /usr/local/bin/docker-java-home
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
-ENV PS1 "\n\e[1;37m[\e[m\e[1;32m\u\e[m\e[1;33m@\e[m\e[1;35m\h\e[m\e[m:\e[4m$(pwd)\e[m\e[1;37m]\e[m\e[1;36m\e[m\n\\$ "
+# ENV PS1 "\n\e[1;37m[\e[m\e[1;32m\u\e[m\e[1;33m@\e[m\e[1;35m\h\e[m\e[m:\e[4m$(pwd)\e[m\e[1;37m]\e[m\e[1;36m\e[m\n\\$ "
+RUN { \
+    echo 'export PS1="\n\e[1;37m[\e[m\e[1;32m\u\e[m\e[1;33m@\e[m\e[1;35m\H\e[m \e[4m\$(pwd)\e[m\e[1;37m]\e[m\e[1;36m\e[m\n\$"'; \
+    echo 'source /etc/profile.d/bash_completion.sh'; \
+    echo 'alias ll="ls -lH"'; \
+} > /root/.bashrc
+
 
 ARG MIRROR="http://mirrors.aliyun.com"
 
 RUN set -x \
     && echo -e "${MIRROR}/alpine/v3.11/main\n${MIRROR}/alpine/v3.11/community" > /etc/apk/repositories \
-	&& apk add --no-cache openjdk8-jre supervisor \
-    && mkdir -p /etc/supervisor.d /home/admin \
+	&& apk add --no-cache openjdk8-jre supervisor bash bash-completion \
+    && mkdir -p /etc/supervisor/conf.d /home/admin \
 	&& [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
-ADD supervisord.conf /etc/
+ADD supervisord.conf /etc/supervisor/
 WORKDIR /home/admin
-ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

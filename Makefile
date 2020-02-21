@@ -18,9 +18,13 @@ jdk:
 
 jre:
 	docker build -f docker/openjdk/8-jre/Dockerfile -t $(HUB)/$(NAME):$(TAG) .
+	docker tag $(HUB)/$(NAME):$(TAG) $(HUB)/$(NAME):latest
+	docker push $(HUB)/$(NAME):latest
 
 jre-supervisord:
 	docker build -f docker/openjdk/8-jre-supervisord/Dockerfile -t $(HUB)/$(NAME)-supervisord:$(TAG) .
+	docker tag $(HUB)/$(NAME)-supervisord:$(TAG) $(HUB)/$(NAME)-supervisord:latest
+	docker push $(HUB)/$(NAME)-supervisord:latest
 
 tag:
 	docker tag $(HUB)/$(NAME)-onbuild:$(TAG) $(HUB)/$(NAME)-onbuild:latest
