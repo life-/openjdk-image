@@ -16,6 +16,9 @@ docker: jdk jre jre-supervisord
 jdk:
 	docker build -f docker/openjdk/8-jdk/Dockerfile -t $(HUB)/$(NAME)-onbuild:$(TAG) .
 
+jdk-aarch64:
+	docker build -f docker/openjdk/8-jdk-aarch64/Dockerfile -t $(HUB)/$(NAME)-onbuild:$(TAG)_aarch64 .
+
 jre:
 	docker build -f docker/openjdk/8-jre/Dockerfile -t $(HUB)/$(NAME):$(TAG) .
 	docker tag $(HUB)/$(NAME):$(TAG) $(HUB)/$(NAME):latest
